@@ -1,25 +1,26 @@
-import logo from './logo.svg';
 import './App.css';
+import React, { useState, useEffect } from "react"
+import { createServer } from "miragejs"
 
-function App() {
+let server = createServer()
+server.get("/api/users", { users: [{ id: 1, name: "Bob" }] })
+
+export default function App() {
+  let [users, setUsers] = useState([])
+
+  useEffect(() => {
+    fetch("/api/users")
+      .then((res) => res.json())
+      .then((json) => {
+        setUsers(json.users)
+      })
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <ul>
+      {users.map((user) => (
+        <li key={user.id}>{user.name}</li>
+      ))}
+    </ul>
+  )
 }
-
-export default App;
